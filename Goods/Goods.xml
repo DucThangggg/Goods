@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Goods</name>
+    </assembly>
+    <members>
+        <member name="M:Goods.Controllers.ItemsController.PostItems_Map(Goods.Goods_DTO.Items_DTO)">
+            <summary>
+            Post a items
+            </summary>
+            <param name="items_Post">include Items</param>
+            <returns></returns>
+        </member>
+        <member name="M:Goods.Controllers.ItemsController.DeleteItemsID(System.Int32)">
+            <summary>
+            Delete a items
+            </summary>
+            <param name="IDProduct">The Id Product of items</param>
+            <returns>An IActionResult</returns>
+            <response code="200">Return the requested Items</response>
+        </member>
+        <member name="T:Goods.Goods_DTO.Items_DTO">
+            <summary>
+            Information about an Item
+            </summary>
+        </member>
+        <member name="P:Goods.Goods_DTO.Items_DTO.ProductName">
+            <summary>
+            The Product Name of the Items
+            </summary>
+        </member>
+        <member name="P:Goods.Goods_DTO.Items_DTO.NumberReview">
+            <summary>
+            The Number Review of the Items
+            </summary>
+        </member>
+        <member name="P:Goods.Goods_DTO.Items_DTO.ProductPrice">
+            <summary>
+            The Product Price of the Items
+            </summary>
+        </member>
+        <member name="P:Goods.Goods_DTO.Items_DTO.ProductRemain">
+            <summary>
+            The Product Remain of the Items
+            </summary>
+        </member>
+        <member name="T:Goods.Migrations.Good">
+            <inheritdoc />
+        </member>
+        <member name="M:Goods.Migrations.Good.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Goods.Migrations.Good.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Goods.Migrations.Good.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
