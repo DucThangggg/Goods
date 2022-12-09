@@ -23,6 +23,7 @@ namespace Goods.Controllers
                 throw new ArgumentNullException(nameof(itemsBll));
         }
         // Get all
+        //[Authorize]
         [HttpGet("All")]
         public async Task<ActionResult<IEnumerable<Items_DTO>>> GetItems_Map()
         {

@@ -10,7 +10,6 @@ namespace Goods.Controllers
 {
     [Route("api/[controller]")]
     [Authorize]
-    [Authorize(Roles = "User")]
     [ApiController]
     public class OrderDetailsController : ControllerBase
     {

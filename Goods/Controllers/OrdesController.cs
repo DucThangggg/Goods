@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace Goods.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ApiController]
     public class OrdesController : ControllerBase
     {

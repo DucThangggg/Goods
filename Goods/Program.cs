@@ -16,6 +16,8 @@ using System.Reflection;
 using FirebaseAdminAuthentication.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,9 @@ builder.Services.AddControllers()
     });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+// Add Server Googole khi sử dụng FE
+//builder.Services.AddRazorPages();
 // Add chú thích cho biến khi chạy lên (Docs API)
 builder.Services.AddSwaggerGen(setupAction =>
 {
@@ -37,25 +42,25 @@ builder.Services.AddSwaggerGen(setupAction =>
     var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
 
     setupAction.IncludeXmlComments(xmlCommentsFullPath);
-    //// Bảo mật thông tin trong Swagger
-    //setupAction.AddSecurityDefinition("GoodsBearerAuth", new OpenApiSecurityScheme()
-    //{
-    //    Type = SecuritySchemeType.Http,
-    //    Scheme = "Bearer",
-    //    Description = "Input a valid token to access this API"
-    //});
-    //// Xác thực trong Swagger
-    //setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
-    //{
-    //    {
-    //        new OpenApiSecurityScheme
-    //        {
-    //        Reference = new OpenApiReference
-    //        {
-    //            Type = ReferenceType.SecurityScheme,
-    //            Id = "GoodsBearerAuth"
-    //        } }, new List<string>() }
-    //});
+    // Bảo mật thông tin trong Swagger
+    setupAction.AddSecurityDefinition("GoodsBearerAuth", new OpenApiSecurityScheme()
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        Description = "Input a valid token to access this API"
+    });
+    // Xác thực trong Swagger
+    setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "GoodsBearerAuth"
+            } }, new List<string>() }
+    });
 });
 // Add services sử dụng DataOnly và TimeOnly
 builder.Services.AddSwaggerGen(options =>
@@ -107,7 +112,7 @@ builder.Services.AddScoped<IOrderDetailsBLL, OrderDetailsBLL>();
 // Thêm sử dụng AutoMap
 object value = builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Access Token
-builder.Services.AddAuthentication("Bearer").AddJwtBearer("abc", options =>
+builder.Services.AddAuthentication("Bearer").AddJwtBearer("AccessToken", options =>
 {
     options.TokenValidationParameters = new()
     {
@@ -129,7 +134,7 @@ builder.Services.AddApiVersioning(setupAction =>
 });
 // Add Firebase
 // firebase auth
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer("abcd" , opt =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer("firebase" , opt =>
 {
     opt.Authority = builder.Configuration["Jwt:Firebase:ValidIssuer"];
     opt.TokenValidationParameters = new TokenValidationParameters
@@ -142,9 +147,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudience = builder.Configuration["Jwt:Firebase:ValidAudience"]
     };
 });
+
+// Add Server cho Google
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    .AddGoogle("google", options =>
+    {
+        options.ClientId = builder.Configuration["Authentications:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentications:Google:ClientSecret"];
+        options.SaveTokens = true;
+    });
+// Ủy quyền
 builder.Services.AddAuthorization(options =>
 {
-    options.DefaultPolicy = new AuthorizationPolicyBuilder().AddAuthenticationSchemes("abc", "abcd").
+    options.DefaultPolicy = new AuthorizationPolicyBuilder().AddAuthenticationSchemes("AccessToken", "firebase", "google").
     RequireAuthenticatedUser().Build();
 
 });

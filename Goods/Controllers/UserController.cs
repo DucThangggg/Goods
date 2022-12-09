@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing.Text;
 using Firebase.Auth;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Goods.Controllers
 {
@@ -79,6 +81,14 @@ namespace Goods.Controllers
             FirebaseAuthLink firebaseAuthLink = await firebaseAuthProvider.SignInWithEmailAndPasswordAsync(email, "test123");
 
             return firebaseAuthLink.FirebaseToken;
+        }
+        [Authorize]
+        [HttpGet("SignInWithGoogle")]
+        public async Task<ActionResult<string>> SignInGoogle()
+        {
+            // Đặt tên google cùng với khai báo Authentication bên Programs
+            var accessToken = await HttpContext.GetTokenAsync("google", "access_token");
+            return accessToken;
         }
     }
 }
