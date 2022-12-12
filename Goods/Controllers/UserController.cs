@@ -10,6 +10,7 @@ using System.Drawing.Text;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Goods.Controllers
 {
@@ -77,7 +78,7 @@ namespace Goods.Controllers
         public async Task<ActionResult<string>> SignInFirebaseEmail(string email)
         {
             FirebaseAuthProvider firebaseAuthProvider = new FirebaseAuthProvider(new FirebaseConfig(API_KEY));
-            //FirebaseAuthLink firebaseAuthLink = await firebaseAuthProvider.CreateUserWithEmailAndPasswordAsync("singletonsean@gmail.com", "test123", "SingletonSean");
+            //FirebaseAuthLink firebaseAuthLink = await firebaseAuthProvider.CreateUserWithEmailAndPasswordAsync("abc@gmail.com", "test123", "DucThang");
             FirebaseAuthLink firebaseAuthLink = await firebaseAuthProvider.SignInWithEmailAndPasswordAsync(email, "test123");
 
             return firebaseAuthLink.FirebaseToken;
@@ -89,6 +90,13 @@ namespace Goods.Controllers
             // Đặt tên google cùng với khai báo Authentication bên Programs
             var accessToken = await HttpContext.GetTokenAsync("google", "access_token");
             return accessToken;
+        }
+        [HttpGet("SignOutWithGoogle")]
+        public async Task<IActionResult> OnPostLogoutAsync()
+        {
+            // using Microsoft.AspNetCore.Authentication;
+            await HttpContext.SignOutAsync();
+            return Ok();
         }
     }
 }
